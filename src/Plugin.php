@@ -5,11 +5,11 @@ declare(strict_types = 1);
 namespace AvtoDev\Composer\Cleanup;
 
 use Composer\Composer;
-use Composer\Script\Event;
 use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;
 use Composer\Plugin\PluginInterface;
 use Composer\Installer\PackageEvents;
+use Composer\Installer\PackageEvent;
 use Composer\EventDispatcher\EventSubscriberInterface;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface
@@ -38,11 +38,11 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Cleanup executing.
      *
-     * @param Event $composer_event
+     * @param PackageEvent $composer_event
      *
      * @return void
      */
-    public static function cleanup(Event $composer_event): void
+    public static function cleanup(PackageEvent $composer_event): void
     {
         $io       = $composer_event->getIO();
         $fs       = new Filesystem;
