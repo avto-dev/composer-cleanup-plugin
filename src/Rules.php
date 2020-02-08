@@ -44,7 +44,7 @@ class Rules
             'erusev/parsedown-extra'                => "{$docs} {$tests}",
             'fideloper/proxy'                       => $docs,
             'filp/whoops'                           => $docs,
-            'friendsofphp/php-cs-fixer'             => "{$docs} {$tests} doc *.sh",
+            'friendsofphp/php-cs-fixer'             => "{$docs} doc *.sh", // Not include `$tests`
             'fzaninotto/faker'                      => "{$docs} {$dot_git} .travis " . \implode(' ',
                     \array_map(static function (string $locale): string {
                         return "src/Faker/Provider/{$locale}";
