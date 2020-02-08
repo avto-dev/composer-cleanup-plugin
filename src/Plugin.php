@@ -55,8 +55,6 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $saved_size_bytes = 0;
         $start_time       = \microtime(true);
 
-        $io->write(\sprintf('<info>%s:</info> Cleanup started...', self::SELF_PACKAGE_NAME));
-
         // Loop over all installed packages
         foreach ($packages as $package) {
             $package_name = $package->getName();
@@ -96,11 +94,13 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             }
         }
 
-        $io->write(\sprintf(
-            '<info>%s:</info> ...done in %01.3f seconds (<comment>%d Kb</comment> saved)',
-            self::SELF_PACKAGE_NAME,
-            \microtime(true) - $start_time,
-            $saved_size_bytes / 1024
-        ));
+        if ($saved_size_bytes > 0) {
+            $io->write(\sprintf(
+                '<info>%s:</info> Cleanup done in %01.3f seconds (<comment>%d Kb</comment> saved)',
+                self::SELF_PACKAGE_NAME,
+                \microtime(true) - $start_time,
+                $saved_size_bytes / 1024
+            ));
+        }
     }
 }
