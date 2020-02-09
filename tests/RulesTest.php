@@ -16,9 +16,21 @@ class RulesTest extends AbstractTestCase
      */
     public function testGetRules(): void
     {
-        foreach (Rules::getRules() as $key => $value) {
+        foreach (Rules::getPackageRules() as $key => $value) {
             $this->assertIsString($key);
-            $this->assertIsString($value);
+            $this->assertIsArray($value);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetGlobalRules(): void
+    {
+        $rules = Rules::getGlobalRules();
+
+        foreach ($rules as $rule) {
+            $this->assertIsString($rule);
         }
     }
 

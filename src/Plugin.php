@@ -8,8 +8,9 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;
 use Composer\Plugin\PluginInterface;
-use Composer\Installer\PackageEvents;
 use Composer\Installer\PackageEvent;
+use Composer\Installer\PackageEvents;
+use Composer\Script\Event as ScriptEvent;
 use Composer\EventDispatcher\EventSubscriberInterface;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface
@@ -38,59 +39,33 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Cleanup executing.
      *
-     * @param PackageEvent $composer_event
+     * @param PackageEvent|ScriptEvent $composer_event
      *
      * @return void
      */
-    public static function cleanup(PackageEvent $composer_event): void
+    public static function cleanup($composer_event): void
     {
-        $io       = $composer_event->getIO();
-        $fs       = new Filesystem;
-        $composer = $composer_event->getComposer();
-        $rules    = Rules::getRules();
+        $io            = $composer_event->getIO();
+        $composer      = $composer_event->getComposer();
+        $fs            = new Filesystem;
+        $global_rules  = Rules::getGlobalRules();
+        $package_rules = Rules::getPackageRules();
 
         $installation_manager = $composer->getInstallationManager();
-        $packages             = $composer->getRepositoryManager()->getLocalRepository()->getPackages();
 
         $saved_size_bytes = 0;
         $start_time       = \microtime(true);
 
         // Loop over all installed packages
-        foreach ($packages as $package) {
+        foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
             $package_name = $package->getName();
+            $install_path = $installation_manager->getInstallPath($package);
+
+            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
 
             // Try to extract defined targets for a package
-            if (isset($rules[$package_name])) {
-                $install_path = $installation_manager->getInstallPath($package);
-
-                // Loop over defined targets for the package
-                foreach (\explode(' ', \trim((string) \preg_replace('~\s+~', ' ', $rules[$package_name]))) as $target) {
-                    // Skip targets which contains `..`
-                    if (\mb_strpos($target, '..') !== false) {
-                        continue;
-                    }
-
-                    // Iterate every found target
-                    $paths = \glob($install_path . DIRECTORY_SEPARATOR . \ltrim($target, '\\/'), \GLOB_ERR);
-
-                    if (\is_array($paths)) {
-                        foreach ($paths as $path) {
-                            try {
-                                $path_size = $fs->size($path);
-
-                                if ($fs->remove($path)) {
-                                    $saved_size_bytes += $path_size;
-                                }
-                            } catch (\Throwable $e) {
-                                $io->write(\sprintf(
-                                    '<info>%s:</info> Error occurred: <error>%s</error>',
-                                    self::SELF_PACKAGE_NAME,
-                                    $e->getMessage()
-                                ));
-                            }
-                        }
-                    }
-                }
+            if (isset($package_rules[$package_name])) {
+                $saved_size_bytes += self::makeClean($install_path, $package_rules[$package_name], $fs, $io);
             }
         }
 
@@ -102,5 +77,42 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
                 $saved_size_bytes / 1024
             ));
         }
+    }
+
+    /**
+     * @param string        $package_path
+     * @param array<string> $rules
+     * @param Filesystem    $fs
+     * @param IOInterface   $io
+     *
+     * @return int
+     */
+    private static function makeClean(string $package_path, array $rules, Filesystem $fs, IOInterface $io): int
+    {
+        $saved_size_bytes = 0;
+
+        foreach ($rules as $rule) {
+            $paths = \glob($package_path . DIRECTORY_SEPARATOR . \ltrim(\trim($rule), '\\/'), \GLOB_ERR);
+
+            if (\is_array($paths)) {
+                foreach ($paths as $path) {
+                    try {
+                        $path_size = $fs->size($path);
+
+                        if ($fs->remove($path)) {
+                            $saved_size_bytes += $path_size;
+                        }
+                    } catch (\Throwable $e) {
+                        $io->write(\sprintf(
+                            '<info>%s:</info> Error occurred: <error>%s</error>',
+                            self::SELF_PACKAGE_NAME,
+                            $e->getMessage()
+                        ));
+                    }
+                }
+            }
+        }
+
+        return $saved_size_bytes;
     }
 }
