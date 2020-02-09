@@ -47,7 +47,6 @@ class Rules
     public static function getPackageRules(): array
     {
         return [
-            'aws/aws-sdk-php'                       => ['src/data'], // Note: Can be dangerous!
             'binarytorch/larecipe'                  => ['package*', '*.js', 'yarn.lock'],
             'clue/stream-filter'                    => ['tests', 'examples'],
             'dragonmantank/cron-expression'         => ['tests'],
