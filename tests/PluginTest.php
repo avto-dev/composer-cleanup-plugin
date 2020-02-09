@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\Composer\Cleanup\Tests;
 
+use ReflectionMethod;
 use AvtoDev\Composer\Cleanup\Plugin;
 use Composer\Installer\PackageEvents;
 
@@ -37,9 +38,11 @@ class PluginTest extends AbstractTestCase
     /**
      * @return void
      */
-    public function testCleanupAllPackagesExists(): void
+    public function testMethodsAccess(): void
     {
-        $this->assertTrue(\method_exists(Plugin::class, 'cleanupAllPackages'));
+        $this->assertTrue((new ReflectionMethod(Plugin::class, 'cleanupAllPackages'))->isPublic());
+        $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageInstallEvent'))->isPublic());
+        $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageUpdateEvent'))->isPublic());
     }
 
     /**

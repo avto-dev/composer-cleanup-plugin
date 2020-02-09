@@ -83,7 +83,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return void
      */
-    protected static function handlePostPackageInstallEvent(PackageEvent $event): void
+    public static function handlePostPackageInstallEvent(PackageEvent $event): void
     {
         $operation = $event->getOperation();
 
@@ -97,7 +97,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return void
      */
-    protected static function handlePostPackageUpdateEvent(PackageEvent $event): void
+    public static function handlePostPackageUpdateEvent(PackageEvent $event): void
     {
         $operation = $event->getOperation();
 
