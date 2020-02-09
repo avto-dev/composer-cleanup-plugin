@@ -10,8 +10,11 @@ use Composer\Util\Filesystem;
 use Composer\Installer\PackageEvent;
 use Composer\Plugin\PluginInterface;
 use Composer\Installer\PackageEvents;
+use Composer\Package\PackageInterface;
 use Composer\Script\Event as ScriptEvent;
 use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\DependencyResolver\Operation\UpdateOperation;
+use Composer\DependencyResolver\Operation\InstallOperation;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -31,22 +34,76 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PackageEvents::POST_PACKAGE_INSTALL => 'cleanup',
-            PackageEvents::POST_PACKAGE_UPDATE  => 'cleanup',
+            PackageEvents::POST_PACKAGE_INSTALL => 'handlePostPackageInstallEvent',
+            PackageEvents::POST_PACKAGE_UPDATE  => 'handlePostPackageUpdateEvent',
         ];
     }
 
     /**
-     * Cleanup executing.
-     *
-     * @param PackageEvent|ScriptEvent $composer_event
+     * @param PackageEvent $event
      *
      * @return void
      */
-    public static function cleanup($composer_event): void
+    protected static function handlePostPackageInstallEvent(PackageEvent $event): void
     {
-        $io            = $composer_event->getIO();
-        $composer      = $composer_event->getComposer();
+        $operation = $event->getOperation();
+
+        if ($operation instanceof InstallOperation) {
+            static::cleanupPackage($operation->getPackage(), $event->getIO(), $event->getComposer());
+        }
+    }
+
+    /**
+     * @param PackageEvent $event
+     *
+     * @return void
+     */
+    protected static function handlePostPackageUpdateEvent(PackageEvent $event): void
+    {
+        $operation = $event->getOperation();
+
+        if ($operation instanceof UpdateOperation) {
+            static::cleanupPackage($operation->getTargetPackage(), $event->getIO(), $event->getComposer());
+        }
+    }
+
+    /**
+     * @param PackageInterface $package
+     * @param IOInterface      $io
+     * @param Composer         $composer
+     *
+     * @return void
+     */
+    protected static function cleanupPackage(PackageInterface $package, IOInterface $io, Composer $composer): void
+    {
+        $fs               = new Filesystem;
+        $saved_size_bytes = 0;
+        $package_rules    = Rules::getPackageRules();
+
+        $install_path = $composer->getInstallationManager()->getInstallPath($package);
+
+        // use global rules at first
+        $saved_size_bytes += self::makeClean($install_path, Rules::getGlobalRules(), $fs, $io);
+
+        // then check for individual package rule
+        if (isset($package_rules[$package->getName()])) {
+            $saved_size_bytes += self::makeClean($install_path, $package_rules[$package->getName()], $fs, $io);
+        }
+
+        if ($saved_size_bytes > 0) {
+            $io->write(\sprintf('    ↳ Cleanup done: <comment>%d Kb</comment> saved', $saved_size_bytes / 1024));
+        }
+    }
+
+    /**
+     * @param ScriptEvent $event
+     *
+     * @return void
+     */
+    public static function cleanupAllPackages(ScriptEvent $event): void
+    {
+        $io            = $event->getIO();
+        $composer      = $event->getComposer();
         $fs            = new Filesystem;
         $global_rules  = Rules::getGlobalRules();
         $package_rules = Rules::getPackageRules();
@@ -69,14 +126,12 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             }
         }
 
-        if ($saved_size_bytes > 0) {
-            $io->write(\sprintf(
-                '<info>%s:</info> Cleanup done in %01.3f seconds (<comment>%d Kb</comment> saved)',
-                self::SELF_PACKAGE_NAME,
-                \microtime(true) - $start_time,
-                $saved_size_bytes / 1024
-            ));
-        }
+        $io->write(\sprintf(
+            '<info>%s:</info> Cleanup done in %01.3f seconds (<comment>%d Kb</comment> saved)',
+            self::SELF_PACKAGE_NAME,
+            \microtime(true) - $start_time,
+            $saved_size_bytes / 1024
+        ));
     }
 
     /**
@@ -103,10 +158,8 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
                             $saved_size_bytes += $path_size;
                         }
                     } catch (\Throwable $e) {
-                        $io->write(\sprintf(
-                            '<info>%s:</info> Error occurred: <error>%s</error>',
-                            self::SELF_PACKAGE_NAME,
-                            $e->getMessage()
+                        $io->writeError(\sprintf(
+                            '<info>%s:</info> Error occurred: %s', self::SELF_PACKAGE_NAME, $e->getMessage()
                         ));
                     }
                 }

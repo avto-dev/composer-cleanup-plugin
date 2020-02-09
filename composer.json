@@ -21,10 +21,7 @@
         "composer/composer": "^1.8.6",
         "phpstan/phpstan": "~0.12",
         "phpunit/phpunit": "~7.5",
-        "symfony/var-dumper": "~3.2 || ^4.0",
-        "nesbot/carbon": "^2.20",
-        "fzaninotto/faker": "^1.9",
-        "league/flysystem-aws-s3-v3": "^1.0"
+        "symfony/var-dumper": "~3.2 || ^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -40,8 +37,8 @@
         "class": "AvtoDev\\Composer\\Cleanup\\Plugin"
     },
     "scripts": {
-        "post-update-cmd":  "AvtoDev\\Composer\\Cleanup\\Plugin::cleanup",
-        "post-install-cmd": "AvtoDev\\Composer\\Cleanup\\Plugin::cleanup",
+        "post-update-cmd":  "AvtoDev\\Composer\\Cleanup\\Plugin::cleanupAllPackages",
+        "post-install-cmd": "AvtoDev\\Composer\\Cleanup\\Plugin::cleanupAllPackages",
         "phpunit": "@php ./vendor/bin/phpunit --no-coverage --colors=always",
         "phpunit-cover": "@php ./vendor/bin/phpunit --coverage-html='./coverage/html'",
         "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",

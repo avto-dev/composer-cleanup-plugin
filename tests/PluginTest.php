@@ -28,18 +28,18 @@ class PluginTest extends AbstractTestCase
         $subs = Plugin::getSubscribedEvents();
 
         $this->assertArrayHasKey(PackageEvents::POST_PACKAGE_INSTALL, $subs);
-        $this->assertSame('cleanup', $subs[PackageEvents::POST_PACKAGE_INSTALL]);
+        $this->assertSame('handlePostPackageInstallEvent', $subs[PackageEvents::POST_PACKAGE_INSTALL]);
 
         $this->assertArrayHasKey(PackageEvents::POST_PACKAGE_UPDATE, $subs);
-        $this->assertSame('cleanup', $subs[PackageEvents::POST_PACKAGE_UPDATE]);
+        $this->assertSame('handlePostPackageUpdateEvent', $subs[PackageEvents::POST_PACKAGE_UPDATE]);
     }
 
     /**
      * @return void
      */
-    public function testCleanupMethodExists(): void
+    public function testCleanupAllPackagesExists(): void
     {
-        $this->assertTrue(\method_exists(Plugin::class, 'cleanup'));
+        $this->assertTrue(\method_exists(Plugin::class, 'cleanupAllPackages'));
     }
 
     /**
