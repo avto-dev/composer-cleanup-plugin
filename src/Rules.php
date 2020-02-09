@@ -19,7 +19,8 @@ class Rules
     {
         return [
             '*.md', '*.MD', '*.rst', '*.RST', // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
-            'AUTHORS', 'LICENSE', // Text files without extensions
+            'AUTHORS', 'LICENSE', 'COPYING', 'AUTHORS', // Text files without extensions
+            'CHANGES.txt', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
             '.github', '.gitlab', // .git* specific directories
             '.gitignore', '.gitattributes', // git-specific files
             'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', // Test configurations
@@ -47,12 +48,56 @@ class Rules
     public static function getPackageRules(): array
     {
         return [
+            'dnoegel/php-xdg-base-dir'         => ['tests'],
+            'lcobucci/jwt'                     => ['test'],
+            'monolog/monolog'                  => ['tests'],
+            'morrislaptop/laravel-queue-clear' => ['tests'],
+            'myclabs/deep-copy'                => ['doc'],
+            'nikic/php-parser'                 => ['test', 'test_old', 'doc'],
+            'phpstan/phpdoc-parser'            => ['doc'],
+            'rap2hpoutre/laravel-log-viewer'   => ['tests'],
+            'schuppo/password-strength'        => ['tests'],
+            'spatie/laravel-permission'        => ['docs'],
+            'symfony/css-selector'             => ['Tests'],
+            'symfony/debug'                    => ['Tests'],
+            'symfony/event-dispatcher'         => ['Tests'],
+            'symfony/filesystem'               => ['Tests'],
+            'symfony/finder'                   => ['Tests'],
+            'symfony/http-foundation'          => ['Tests'],
+            'symfony/http-kernel'              => ['Tests'],
+            'symfony/options-resolver'         => ['Tests'],
+            'symfony/routing'                  => ['Tests'],
+            'symfony/stopwatch'                => ['Tests'],
+
+            'artesaos/seotools'                     => ['tests'],
+            'cakephp/chronos'                       => ['docs'],
+            'deployer/deployer'                     => ['docs'],
+            'deployer/recipes'                      => ['docs'],
+            'google/apiclient'                      => ['docs'],
+            'hackzilla/password-generator'          => ['Tests'],
+            'phenx/php-font-lib'                    => ['tests'],
+            'predis/predis'                         => ['examples'],
+            'rmccue/requests'                       => ['tests', 'docs', 'examples'],
+            'stil/gd-text'                          => ['tests'],
+            'theiconic/php-ga-measurement-protocol' => ['tests', 'docs'],
+            'zircote/swagger-php'                   => ['tests', 'examples', 'docs'],
+
+            'chumper/zipper'                       => ['tests'],
+            'cogpowered/finediff'                  => ['tests'],
+            'elasticsearch/elasticsearch'          => ['tests', 'travis', 'docs'],
+            'meyfa/php-svg'                        => ['tests'],
+            'ralouphie/getallheaders'              => ['tests'],
+            'react/promise'                        => ['tests'],
+            'sabberworm/php-css-parser'            => ['tests'],
+            'unisharp/laravel-filemanager'         => ['tests', 'docs'],
+            'yandex-money/yandex-checkout-sdk-php' => ['tests'],
+
             'binarytorch/larecipe'                  => ['package*', '*.js', 'yarn.lock'],
             'clue/stream-filter'                    => ['tests', 'examples'],
             'dragonmantank/cron-expression'         => ['tests'],
             'erusev/parsedown-extra'                => ['test'],
             'friendsofphp/php-cs-fixer'             => ['*.sh'], // Note: `tests` must be not included
-            'fzaninotto/faker'                      => self::getFzaninottoFakerRules(),
+            'fzaninotto/faker'                      => \array_merge(self::getFzaninottoFakerRules(), ['test']),
             'hamcrest/hamcrest-php'                 => ['tests'],
             'jakub-onderka/php-console-color'       => ['tests'],
             'jakub-onderka/php-console-highlighter' => ['tests', 'examples'],
@@ -86,7 +131,7 @@ class Rules
             'sentry/sentry-laravel'                 => ['test', 'scripts', '.craft.yml'],
             'spiral/goridge'                        => ['examples', '*.go', 'go.mod', 'go.sum'],
             'spiral/roadrunner'                     => [
-                'cmd', 'osutil', 'service', 'util', '*.mod', '*.sum', '*.go', '*.sh',
+                'cmd', 'osutil', 'service', 'util', '*.mod', '*.sum', '*.go', '*.sh', 'tests',
             ],
             'swiftmailer/swiftmailer'               => ['tests'],
             'symfony/psr-http-message-bridge'       => ['Tests'],
@@ -129,7 +174,8 @@ class Rules
             'b?*_*', 'b?', 'b??',
             'c?*_*', 'c?', 'c??',
             'd?*_*', 'd?', 'd??',
-            'e[bel]_*', 'en_[01ABCDEFHIJKLMN]*', 'en_G[DGHIMUY]*', 'e[belostw]?', 'e[stw]_*', 'en_[PRSTUVWZ]?', 'e[elnost]',
+            'e[bel]_*', 'en_[01ABCDEFHIJKLMN]*', 'en_G[DGHIMUY]*', 'e[belostw]?', 'e[stw]_*', 'en_[PRSTUVWZ]?',
+            'e[elnost]',
             'f?*_*', 'f?', 'f??',
             'g?*_*', 'g?', 'g??',
             'h?*_*', 'h?', 'h??',
