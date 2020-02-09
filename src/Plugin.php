@@ -40,6 +40,45 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
+     * @param ScriptEvent $event
+     *
+     * @return void
+     */
+    public static function cleanupAllPackages(ScriptEvent $event): void
+    {
+        $io            = $event->getIO();
+        $composer      = $event->getComposer();
+        $fs            = new Filesystem;
+        $global_rules  = Rules::getGlobalRules();
+        $package_rules = Rules::getPackageRules();
+
+        $installation_manager = $composer->getInstallationManager();
+
+        $saved_size_bytes = 0;
+        $start_time       = \microtime(true);
+
+        // Loop over all installed packages
+        foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
+            $package_name = $package->getName();
+            $install_path = $installation_manager->getInstallPath($package);
+
+            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
+
+            // Try to extract defined targets for a package
+            if (isset($package_rules[$package_name])) {
+                $saved_size_bytes += self::makeClean($install_path, $package_rules[$package_name], $fs, $io);
+            }
+        }
+
+        $io->write(\sprintf(
+            '<info>%s:</info> Cleanup done in %01.3f seconds (<comment>%d Kb</comment> saved)',
+            self::SELF_PACKAGE_NAME,
+            \microtime(true) - $start_time,
+            $saved_size_bytes / 1024
+        ));
+    }
+
+    /**
      * @param PackageEvent $event
      *
      * @return void
@@ -93,45 +132,6 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         if ($saved_size_bytes > 0) {
             $io->write(\sprintf('    ↳ Cleanup done: <comment>%d Kb</comment> saved', $saved_size_bytes / 1024));
         }
-    }
-
-    /**
-     * @param ScriptEvent $event
-     *
-     * @return void
-     */
-    public static function cleanupAllPackages(ScriptEvent $event): void
-    {
-        $io            = $event->getIO();
-        $composer      = $event->getComposer();
-        $fs            = new Filesystem;
-        $global_rules  = Rules::getGlobalRules();
-        $package_rules = Rules::getPackageRules();
-
-        $installation_manager = $composer->getInstallationManager();
-
-        $saved_size_bytes = 0;
-        $start_time       = \microtime(true);
-
-        // Loop over all installed packages
-        foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
-            $package_name = $package->getName();
-            $install_path = $installation_manager->getInstallPath($package);
-
-            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
-
-            // Try to extract defined targets for a package
-            if (isset($package_rules[$package_name])) {
-                $saved_size_bytes += self::makeClean($install_path, $package_rules[$package_name], $fs, $io);
-            }
-        }
-
-        $io->write(\sprintf(
-            '<info>%s:</info> Cleanup done in %01.3f seconds (<comment>%d Kb</comment> saved)',
-            self::SELF_PACKAGE_NAME,
-            \microtime(true) - $start_time,
-            $saved_size_bytes / 1024
-        ));
     }
 
     /**
