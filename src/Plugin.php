@@ -129,7 +129,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             $saved_size_bytes += self::makeClean($install_path, $package_rules[$package->getName()], $fs, $io);
         }
 
-        if ($saved_size_bytes > 0) {
+        if ($saved_size_bytes > 1024 * 16) {
             $io->write(\sprintf('    ↳ Cleanup done: <comment>%d Kb</comment> saved', $saved_size_bytes / 1024));
         }
     }
