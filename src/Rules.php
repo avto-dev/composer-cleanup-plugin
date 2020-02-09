@@ -31,7 +31,7 @@ class Rules
             '.editorconfig', '.idea', '.vscode', // Configuration for editors
             'phive.xml', 'build.xml', // Build configurations
             'composer.lock', // Composer lock file
-            'Makefile' // Scripts, Makefile
+            'Makefile', // Scripts, Makefile
         ];
     }
 
