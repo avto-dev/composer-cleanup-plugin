@@ -18,20 +18,21 @@ class Rules
     public static function getGlobalRules(): array
     {
         return [
-            '*.md', '*.MD', '*.rst', '*.RST', // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
+            '*.md', '*.MD', '*.rst', '*.RST', '*.markdown', // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
             'AUTHORS', 'LICENSE', 'COPYING', 'AUTHORS', // Text files without extensions
-            'CHANGES.txt', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
+            'CHANGES.txt', 'CHANGES', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
             '.github', '.gitlab', // .git* specific directories
             '.gitignore', '.gitattributes', // git-specific files
             'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', // Test configurations
             '.travis.yml', '.travis', '.scrutinizer.yml', '.circleci', 'appveyor.yml', // CI
             '.codecov.yml', '.coveralls.yml', '.styleci.yml', // CI
             '.php_cs', '.php_cs.*', 'phpcs.*', '.*lint', // Code-style definitions
-            '.gush.yml', // 3rd party integrations
+            '.gush.yml', 'bors.toml', '.pullapprove.yml', // 3rd party integrations
             '.editorconfig', '.idea', '.vscode', // Configuration for editors
             'phive.xml', 'build.xml', // Build configurations
             'composer.lock', // Composer lock file
             'Makefile', // Scripts, Makefile
+            'Dockerfile', '.dockerignore', // Docker
         ];
     }
 
@@ -131,7 +132,7 @@ class Rules
             'sentry/sentry-laravel'                 => ['test', 'scripts', '.craft.yml'],
             'spiral/goridge'                        => ['examples', '*.go', 'go.mod', 'go.sum'],
             'spiral/roadrunner'                     => [
-                'cmd', 'osutil', 'service', 'util', '*.mod', '*.sum', '*.go', '*.sh', 'tests',
+                'cmd', 'osutil', 'service', 'util', 'systemd', '*.mod', '*.sum', '*.go', '*.sh', 'tests', 'Dockerfile',
             ],
             'swiftmailer/swiftmailer'               => ['tests'],
             'symfony/psr-http-message-bridge'       => ['Tests'],
