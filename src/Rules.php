@@ -32,7 +32,7 @@ class Rules
             'phive.xml', 'build.xml', // Build configurations
             'composer.lock', // Composer lock file
             'Makefile', // Scripts, Makefile
-            'Dockerfile', '.dockerignore', // Docker
+            'Dockerfile', 'docker-compose.yml', 'docker-compose.yaml', '.dockerignore', // Docker
         ];
     }
 
@@ -132,7 +132,7 @@ class Rules
             'sentry/sentry-laravel'                 => ['test', 'scripts', '.craft.yml'],
             'spiral/goridge'                        => ['examples', '*.go', 'go.mod', 'go.sum'],
             'spiral/roadrunner'                     => [
-                'cmd', 'osutil', 'service', 'util', 'systemd', '*.mod', '*.sum', '*.go', '*.sh', 'tests', 'Dockerfile',
+                'cmd', 'osutil', 'service', 'util', 'systemd', '*.mod', '*.sum', '*.go', '*.sh', 'tests',
             ],
             'swiftmailer/swiftmailer'               => ['tests'],
             'symfony/psr-http-message-bridge'       => ['Tests'],
