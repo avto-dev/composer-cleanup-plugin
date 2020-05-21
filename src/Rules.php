@@ -23,9 +23,9 @@ class Rules
             'CHANGES.txt', 'CHANGES', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
             '.github', '.gitlab', // .git* specific directories
             '.gitignore', '.gitattributes', // git-specific files
-            'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', // Test configurations
+            'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', '.psalm', // Test configurations
             '.travis.yml', '.travis', '.scrutinizer.yml', '.circleci', 'appveyor.yml', // CI
-            '.codecov.yml', '.coveralls.yml', '.styleci.yml', // CI
+            '.codecov.yml', '.coveralls.yml', '.styleci.yml', '.dependabot', // CI
             '.php_cs', '.php_cs.*', 'phpcs.*', '.*lint', // Code-style definitions
             '.gush.yml', 'bors.toml', '.pullapprove.yml', // 3rd party integrations
             '.editorconfig', '.idea', '.vscode', // Configuration for editors
@@ -128,19 +128,28 @@ class Rules
             'sebastian/object-enumerator'           => ['tests'],
             'sebastian/object-reflector'            => ['tests'],
             'sebastian/recursion-context'           => ['tests'],
-            'sebastian/resource-operations'         => ['tests'],
+            'sebastian/resource-operations'         => ['tests', 'build'],
             'sentry/sentry-laravel'                 => ['test', 'scripts', '.craft.yml'],
             'spiral/goridge'                        => ['examples', '*.go', 'go.mod', 'go.sum'],
             'spiral/roadrunner'                     => [
                 'cmd', 'osutil', 'service', 'util', 'systemd', '*.mod', '*.sum', '*.go', '*.sh', 'tests',
             ],
-            'swiftmailer/swiftmailer'               => ['tests'],
+            'swiftmailer/swiftmailer'               => ['tests', 'doc'],
             'symfony/psr-http-message-bridge'       => ['Tests'],
             'symfony/service-contracts'             => ['Test'],
             'symfony/translation'                   => ['Tests'],
             'symfony/translation-contracts'         => ['Test'],
             'symfony/var-dumper'                    => ['Tests', 'Test'],
             'theseer/tokenizer'                     => ['tests'],
+
+            'sebastian/type'            => ['tests'],
+            'sebastian/global-state'    => ['tests'],
+            'sebastian/code-unit'       => ['tests'],
+            'phpunit/php-invoker'       => ['tests'],
+            'facade/ignition-contracts' => ['Tests', 'docs'],
+            'doctrine/annotations'      => ['docs'],
+            'doctrine/inflector'        => ['docs'],
+            'doctrine/instantiator'     => ['docs'],
         ];
     }
 

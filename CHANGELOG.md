@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.2.0
+
+### Changed
+
+- Rules set updated
+- Minimal package cleanup size changed from 16 to 32 KiB (for showing message `Cleanup done ...`)
+
 ## v2.1.0
 
 ### Changed
