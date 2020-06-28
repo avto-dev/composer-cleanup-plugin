@@ -12,33 +12,15 @@ on:
 
 jobs: # Docs: <https://git.io/JvxXE>
   php:
-    name: PHP ${{ matrix.php }}, ${{ matrix.setup }} setup, laravel ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }}, ${{ matrix.setup }} setup
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         setup: [basic, lowest]
-        laravel: [default]
         coverage: [yes]
         php: ['7.2', '7.3', '7.4']
-        include:
-          - php: '7.3'
-            setup: basic
-            coverage: no
-            laravel: '~5.6.0'
-          - php: '7.3'
-            setup: basic
-            coverage: no
-            laravel: '~5.7.0'
-          - php: '7.3'
-            setup: basic
-            coverage: no
-            laravel: '~5.8.0'
-          - php: '7.3'
-            setup: basic
-            coverage: no
-            laravel: '^6.0'
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -71,12 +53,8 @@ jobs: # Docs: <https://git.io/JvxXE>
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-suggest --ansi
 
-      - name: Install specific laravel version
-        if: matrix.laravel != 'default'
-        run: composer require --dev --update-with-dependencies --prefer-dist --no-suggest --ansi laravel/laravel "${{ matrix.laravel }}"
-
       - name: Show most important packages versions
-        run: composer info | grep -e laravel -e phpunit -e phpstan
+        run: composer info | grep -e composer -e phpunit -e phpstan
 
       - name: Execute tests
         if: matrix.coverage != 'yes'
