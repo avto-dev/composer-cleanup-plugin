@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.2",
         "composer-plugin-api": "^1.0"
     },
     "require-dev": {
@@ -54,8 +54,5 @@
     "support": {
         "issues": "https://github.com/avto-dev/composer-cleanup-plugin/issues",
         "source": "https://github.com/avto-dev/composer-cleanup-plugin"
-    },
-    "config": {
-        "sort-packages": true
     }
 }
