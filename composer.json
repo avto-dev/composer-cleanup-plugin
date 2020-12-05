@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "AvtoDev\\Composer\\Cleanup\\": "src"
+            "AvtoDev\\Composer\\Cleanup\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AvtoDev\\Composer\\Cleanup\\Tests\\": "tests"
+            "AvtoDev\\Composer\\Cleanup\\Tests\\": "tests/"
         }
     },
     "extra": {
