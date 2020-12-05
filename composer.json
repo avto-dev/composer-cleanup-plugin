@@ -14,23 +14,22 @@
         }
     ],
     "require": {
-        "php": "^7.2",
-        "composer-plugin-api": "^1.0"
+        "php": "^7.2 || ^8.0",
+        "composer-plugin-api": "^1.0 || ^2.0"
     },
     "require-dev": {
-        "composer/composer": "^1.8.6",
-        "phpstan/phpstan": "~0.12",
-        "phpunit/phpunit": "~7.5",
-        "symfony/var-dumper": "~3.2 || ^4.0"
+        "composer/composer": "^1.8.6 || ^2.0",
+        "phpstan/phpstan": "~0.12.34",
+        "phpunit/phpunit": "^8.5.4 || ^9.3"
     },
     "autoload": {
         "psr-4": {
-            "AvtoDev\\Composer\\Cleanup\\": "src"
+            "AvtoDev\\Composer\\Cleanup\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AvtoDev\\Composer\\Cleanup\\Tests\\": "tests"
+            "AvtoDev\\Composer\\Cleanup\\Tests\\": "tests/"
         }
     },
     "extra": {

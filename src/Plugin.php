@@ -22,10 +22,32 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @codeCoverageIgnore
      */
     public function activate(Composer $composer, IOInterface $io): void
     {
         // Nothing to do here, as all features are provided through event listeners
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function deactivate(Composer $composer, IOInterface $io): void
+    {
+        // Nothing to do here
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function uninstall(Composer $composer, IOInterface $io): void
+    {
+        // Nothing to do here
     }
 
     /**

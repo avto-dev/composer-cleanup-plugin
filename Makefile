@@ -19,19 +19,19 @@ build: ## Build docker images, required for current package environment
 	$(dc_bin) build
 
 latest: clean ## Install latest php dependencies
-	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --ansi --no-suggest --prefer-dist --prefer-stable
+	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --ansi --prefer-dist --prefer-stable
 
 install: clean ## Install regular php dependencies
-	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --prefer-dist --no-interaction --no-suggest
+	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --prefer-dist
 
 lowest: clean ## Install lowest php dependencies
-	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --ansi --no-suggest --prefer-dist --prefer-lowest
+	$(dc_bin) run $(RUN_APP_ARGS) composer update -n --ansi --prefer-dist --prefer-lowest
 
 test: ## Execute php tests and linters
 	$(dc_bin) run $(RUN_APP_ARGS) composer test
 
 test-cover: ## Execute php tests with coverage
-	$(dc_bin) run --rm --user "0:0" app sh -c 'docker-php-ext-enable xdebug && su $(shell whoami) -s /bin/sh -c "composer phpunit-cover"'
+	$(dc_bin) run --rm --user "0:0" -e 'XDEBUG_MODE=coverage' app sh -c 'docker-php-ext-enable xdebug && su $(shell whoami) -s /bin/sh -c "composer phpunit-cover"'
 
 shell: ## Start shell into container with php
 	$(dc_bin) run -e "PS1=\[\033[1;32m\]\[\033[1;36m\][\u@docker] \[\033[1;34m\]\w\[\033[0;35m\] \[\033[1;36m\]# \[\033[0m\]" \
