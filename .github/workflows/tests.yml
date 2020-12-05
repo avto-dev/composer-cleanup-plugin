@@ -13,14 +13,14 @@ on:
 jobs: # Docs: <https://git.io/JvxXE>
   php:
     name: PHP ${{ matrix.php }}, ${{ matrix.setup }} setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         setup: [basic, lowest]
         coverage: [yes]
-        php: ['7.2', '7.3', '7.4']
+        php: ['7.2', '7.3', '7.4', '8.0']
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -29,8 +29,7 @@ jobs: # Docs: <https://git.io/JvxXE>
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring
-          tools: composer:v1 # TODO update composer up to v2
+          extensions: mbstring, xdebug
 
       - name: Get Composer Cache Directory # Docs: <https://git.io/JfAKn#php---composer>
         id: composer-cache
@@ -43,16 +42,13 @@ jobs: # Docs: <https://git.io/JvxXE>
           key: ${{ runner.os }}-composer-${{ matrix.setup }}-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer 'hirak/prestissimo' package
-        run: composer global require hirak/prestissimo --update-no-dev --no-progress --ansi
-
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-suggest --prefer-lowest --ansi
+        run: composer update --prefer-dist --prefer-lowest --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-suggest --ansi
+        run: composer update --prefer-dist --ansi
 
       - name: Show most important packages versions
         run: composer info | grep -e composer -e phpunit -e phpstan
@@ -63,6 +59,8 @@ jobs: # Docs: <https://git.io/JvxXE>
 
       - name: Execute tests with code coverage
         if: matrix.coverage == 'yes'
+        env:
+          XDEBUG_MODE: coverage
         run: composer test-cover
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
@@ -72,9 +70,10 @@ jobs: # Docs: <https://git.io/JvxXE>
           file: ./coverage/clover.xml
           flags: php
           fail_ci_if_error: false
+
   lint-changelog:
     name: Lint changelog file
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
