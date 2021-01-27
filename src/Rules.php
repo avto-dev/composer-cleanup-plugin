@@ -18,7 +18,8 @@ class Rules
     public static function getGlobalRules(): array
     {
         return [
-            '*.md', '*.MD', '*.rst', '*.RST', '*.markdown', // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
+            '*.md', '*.MD', '*.rst', '*.RST', '*.markdown',
+            // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
             'AUTHORS', 'LICENSE', 'COPYING', 'AUTHORS', // Text files without extensions
             'CHANGES.txt', 'CHANGES', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
             '.github', '.gitlab', // .git* specific directories
@@ -58,7 +59,7 @@ class Rules
             'phpstan/phpdoc-parser'            => ['doc'],
             'rap2hpoutre/laravel-log-viewer'   => ['tests'],
             'schuppo/password-strength'        => ['tests'],
-            'spatie/laravel-permission'        => ['docs'],
+            'spatie/laravel-permission'        => ['art', 'docs'],
             'symfony/css-selector'             => ['Tests'],
             'symfony/debug'                    => ['Tests'],
             'symfony/event-dispatcher'         => ['Tests'],
@@ -79,26 +80,26 @@ class Rules
             'phenx/php-font-lib'                    => ['tests'],
             'predis/predis'                         => ['examples'],
             'rmccue/requests'                       => ['tests', 'docs', 'examples'],
-            'stil/gd-text'                          => ['tests'],
+            'stil/gd-text'                          => ['examples', 'tests'],
             'theiconic/php-ga-measurement-protocol' => ['tests', 'docs'],
             'zircote/swagger-php'                   => ['tests', 'examples', 'docs'],
 
-            'chumper/zipper'                       => ['tests'],
-            'cogpowered/finediff'                  => ['tests'],
-            'elasticsearch/elasticsearch'          => ['tests', 'travis', 'docs'],
-            'meyfa/php-svg'                        => ['tests'],
-            'ralouphie/getallheaders'              => ['tests'],
-            'react/promise'                        => ['tests'],
-            'sabberworm/php-css-parser'            => ['tests'],
-            'unisharp/laravel-filemanager'         => ['tests', 'docs'],
-            'yandex-money/yandex-checkout-sdk-php' => ['tests'],
+            'chumper/zipper'               => ['tests'],
+            'cogpowered/finediff'          => ['tests'],
+            'elasticsearch/elasticsearch'  => ['tests', 'travis', 'docs'],
+            'meyfa/php-svg'                => ['tests'],
+            'ralouphie/getallheaders'      => ['tests'],
+            'react/promise'                => ['tests'],
+            'sabberworm/php-css-parser'    => ['tests'],
+            'unisharp/laravel-filemanager' => \array_merge(self::getLaravelFileManagerRules(), ['tests', 'docs']),
+            'yoomoney/yookassa-sdk-php'    => ['tests', '*.md'],
 
             'binarytorch/larecipe'                  => ['package*', '*.js', 'yarn.lock'],
             'clue/stream-filter'                    => ['tests', 'examples'],
             'dragonmantank/cron-expression'         => ['tests'],
             'erusev/parsedown-extra'                => ['test'],
-            'friendsofphp/php-cs-fixer'             => ['*.sh'], // Note: `tests` must be not included
-            'fzaninotto/faker'                      => \array_merge(self::getFzaninottoFakerRules(), ['test']),
+            'friendsofphp/php-cs-fixer'             => ['*.sh', 'doc'], // Note: `tests` must be not included
+            'fakerphp/faker'                        => \array_merge(self::getFakerPhpRules(), ['test']),
             'hamcrest/hamcrest-php'                 => ['tests'],
             'jakub-onderka/php-console-color'       => ['tests'],
             'jakub-onderka/php-console-highlighter' => ['tests', 'examples'],
@@ -150,13 +151,25 @@ class Rules
             'doctrine/annotations'      => ['docs'],
             'doctrine/inflector'        => ['docs'],
             'doctrine/instantiator'     => ['docs'],
+
+            'voku/portable-ascii'            => ['docs'],
+            'anhskohbo/no-captcha'           => ['tests'],
+            'beyondcode/laravel-dump-server' => ['docs'],
+            'dompdf/dompdf'                  => ['LICENSE.LGPL', 'VERSION'],
+            'kalnoy/nestedset'               => ['tests'],
+            'phenx/php-svg-lib'              => ['tests', 'COPYING.GPL'],
+            'wapmorgan/morphos'              => ['tests', '*.md'],
+            'proj4php/proj4php'              => ['test'],
+            'aws/aws-sdk-php'                => ['.changes', '.github'],
         ];
     }
 
     /**
+     * Package fzaninotto/faker moved to fakerphp/faker
+     *
      * @return array<string>
      */
-    protected static function getFzaninottoFakerRules(): array
+    protected static function getFakerPhpRules(): array
     {
         return \array_map(static function (string $locale): string {
             return "src/Faker/Provider/{$locale}";
@@ -207,6 +220,19 @@ class Rules
             'x?*_*', 'x?', 'x??',
             'y?*_*', 'y?', 'y??',
             'z?*_*', 'z?', 'z??',
+        ]);
+    }
+
+    /**
+     * @return string[]
+     */
+    protected static function getLaravelFileManagerRules(): array
+    {
+        return \array_map(static function (string $locale): string {
+            return "src/lang/Provider/{$locale}";
+        }, [
+            'ar', 'az', 'bg', 'de', 'el', 'eu', 'fa', 'fr', 'he', 'hu', 'id', 'it', 'ka', 'nl', 'pl', 'pt', 'pt-BR',
+            'ro', 'rs', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW',
         ]);
     }
 }
