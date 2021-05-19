@@ -165,7 +165,7 @@ class Rules
     }
 
     /**
-     * Package fzaninotto/faker moved to fakerphp/faker
+     * Package fzaninotto/faker moved to fakerphp/faker.
      *
      * @return array<string>
      */
