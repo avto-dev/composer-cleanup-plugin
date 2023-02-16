@@ -161,6 +161,26 @@ class Rules
             'wapmorgan/morphos'              => ['tests', '*.md'],
             'proj4php/proj4php'              => ['test'],
             'aws/aws-sdk-php'                => ['.changes', '.github'],
+
+            'afiqiqmal/huawei-push'                   => ['tests'],
+            'symfony/console'                         => ['Tester'],
+            'phpunit/phpunit-selenium'                => ['Tests', 'selenium-1-tests'],
+            'opekunov/laravel-centrifugo-broadcaster' => ['tests'],
+            'laravel/ui'                              => ['tests'],
+            'maennchen/zipstream-php'                 => ['test'],
+            'markbaker/matrix'                        => ['examples'],
+            'markbaker/complex'                       => ['examples'],
+            'cbschuld/browser.php'                    => ['tests'],
+            'maxmind-db/reader'                       => ['ext/tests', 'examples', 'tests'],
+            'kwn/number-to-words'                     => ['tests'],
+            'tecnickcom/tcpdf'                        => ['doc', 'examples', '*.TXT'],
+            'kigkonsult/icalcreator'                  => ['docs'],
+            'pear/archive_tar'                        => ['docs', 'tests', 'sync-php4'],
+            'pear/cache_lite'                         => ['docs', 'tests', 'TODO'],
+            'pear/console_getopt'                     => ['Console/tests'],
+            'pear/mime_type'                          => ['docs', 'tests'],
+            'pear/structures_graph'                   => ['docs', 'tests'],
+            'psr/log'                                 => ['Psr/Log/Test'],
         ];
     }
 
@@ -229,7 +249,7 @@ class Rules
     protected static function getLaravelFileManagerRules(): array
     {
         return \array_map(static function (string $locale): string {
-            return "src/lang/Provider/{$locale}";
+            return "src/lang/{$locale}";
         }, [
             'ar', 'az', 'bg', 'de', 'el', 'eu', 'fa', 'fr', 'he', 'hu', 'id', 'it', 'ka', 'nl', 'pl', 'pt', 'pt-BR',
             'ro', 'rs', 'sv', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW',
