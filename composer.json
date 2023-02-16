@@ -14,13 +14,13 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
-        "composer-plugin-api": "^1.0 || ^2.0"
+        "php": "^8.0",
+        "composer-plugin-api": "^2.0"
     },
     "require-dev": {
-        "composer/composer": "^1.8.6 || ^2.0",
-        "phpstan/phpstan": "~0.12.34",
-        "phpunit/phpunit": "^8.5.4 || ^9.3"
+        "composer/composer": "^2.0",
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "psr-4": {

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+### Changed
+
+- Minimal require PHP version now is `8.0`
+- Minimal `composer-plugin-api` package  is `2.0`
+- Minimal `phpstan` package  is `1.9`
+- Version of `composer` in docker container updated up to `2.5.3`
+
 ## v2.4.0
 
 ### Changed
