@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace AvtoDev\Composer\Cleanup\Tests;
 
 use ReflectionMethod;
+use Composer\Script\ScriptEvents;
 use AvtoDev\Composer\Cleanup\Plugin;
-use Composer\Installer\PackageEvents;
 
 /**
  * @covers \AvtoDev\Composer\Cleanup\Plugin
@@ -28,11 +28,8 @@ class PluginTest extends AbstractTestCase
     {
         $subs = Plugin::getSubscribedEvents();
 
-        $this->assertArrayHasKey(PackageEvents::POST_PACKAGE_INSTALL, $subs);
-        $this->assertSame('handlePostPackageInstallEvent', $subs[PackageEvents::POST_PACKAGE_INSTALL]);
-
-        $this->assertArrayHasKey(PackageEvents::POST_PACKAGE_UPDATE, $subs);
-        $this->assertSame('handlePostPackageUpdateEvent', $subs[PackageEvents::POST_PACKAGE_UPDATE]);
+        $this->assertArrayHasKey(ScriptEvents::POST_AUTOLOAD_DUMP, $subs);
+        $this->assertSame('cleanupAllPackages', $subs[ScriptEvents::POST_AUTOLOAD_DUMP]);
     }
 
     /**

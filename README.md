@@ -24,10 +24,19 @@ Require this package in your composer.json:
 ```bash
 $ composer require avto-dev/composer-cleanup-plugin "^2.0"
 ```
-      
+
 ## Usage
 
-This plugin will work automatically on any packages installed.
+If you are using `composer:v1` you need to add lines to run the clean command after each package is installed:
+
+```json
+"post-package-install": [
+    "AvtoDev\\Composer\\Cleanup\\Plugin::handlePostPackageInstallEvent"
+],
+```
+
+If you use `composer:v2` then all packages are installed in parallel, so automatic cleanup occurs after all packages are installed and the event fires `POST_AUTOLOAD_DUMP`.
+
 
 ## What does it do?
 
@@ -72,7 +81,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/avto-dev/composer-cleanup-plugin.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/avto-dev/composer-cleanup-plugin.svg?longCache=true
-[badge_build]:https://img.shields.io/github/workflow/status/avto-dev/composer-cleanup-plugin/tests?logo=github
+[badge_build]:https://img.shields.io/github/actions/workflow/status/avto-dev/composer-cleanup-plugin/tests.yml
 [badge_coverage]:https://img.shields.io/codecov/c/github/avto-dev/composer-cleanup-plugin/master.svg?maxAge=60
 [badge_downloads_count]:https://img.shields.io/packagist/dt/avto-dev/composer-cleanup-plugin.svg?maxAge=180
 [badge_license]:https://img.shields.io/packagist/l/avto-dev/composer-cleanup-plugin.svg?longCache=true

@@ -7,9 +7,9 @@ namespace AvtoDev\Composer\Cleanup;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Util\Filesystem;
+use Composer\Script\ScriptEvents;
 use Composer\Installer\PackageEvent;
 use Composer\Plugin\PluginInterface;
-use Composer\Installer\PackageEvents;
 use Composer\Package\PackageInterface;
 use Composer\Script\Event as ScriptEvent;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -56,8 +56,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PackageEvents::POST_PACKAGE_INSTALL => 'handlePostPackageInstallEvent',
-            PackageEvents::POST_PACKAGE_UPDATE  => 'handlePostPackageUpdateEvent',
+            ScriptEvents::POST_AUTOLOAD_DUMP => 'cleanupAllPackages',
         ];
     }
 
