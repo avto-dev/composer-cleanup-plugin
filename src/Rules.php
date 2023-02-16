@@ -161,7 +161,6 @@ class Rules
             'wapmorgan/morphos'              => ['tests', '*.md'],
             'proj4php/proj4php'              => ['test'],
             'aws/aws-sdk-php'                => ['.changes', '.github'],
-
             'afiqiqmal/huawei-push'                   => ['tests'],
             'symfony/console'                         => ['Tester'],
             'phpunit/phpunit-selenium'                => ['Tests', 'selenium-1-tests'],
