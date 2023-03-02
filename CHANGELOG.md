@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+### Fixed
+
+- Rule for `dompdf/dompdf` package [[#10](https://github.com/avto-dev/composer-cleanup-plugin/issues/10)]
+
 ## v2.5.0
 
 ### Changed
