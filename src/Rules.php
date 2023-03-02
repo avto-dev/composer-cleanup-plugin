@@ -155,7 +155,7 @@ class Rules
             'voku/portable-ascii'            => ['docs'],
             'anhskohbo/no-captcha'           => ['tests'],
             'beyondcode/laravel-dump-server' => ['docs'],
-            'dompdf/dompdf'                  => ['LICENSE.LGPL', 'VERSION'],
+            'dompdf/dompdf'                  => ['LICENSE.LGPL'],
             'kalnoy/nestedset'               => ['tests'],
             'phenx/php-svg-lib'              => ['tests', 'COPYING.GPL'],
             'wapmorgan/morphos'              => ['tests', '*.md'],
