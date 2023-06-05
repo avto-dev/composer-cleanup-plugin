@@ -81,7 +81,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         // Loop over all installed packages
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
             $package_name = $package->getName();
-            $install_path = $installation_manager->getInstallPath($package);
+            $install_path = $installation_manager->getInstallPath($package) ?: '';
 
             $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
 
@@ -140,7 +140,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $saved_size_bytes = 0;
         $package_rules    = Rules::getPackageRules();
 
-        $install_path = $composer->getInstallationManager()->getInstallPath($package);
+        $install_path = $composer->getInstallationManager()->getInstallPath($package) ?: '';
 
         // use global rules at first
         $saved_size_bytes += self::makeClean($install_path, Rules::getGlobalRules(), $fs, $io);

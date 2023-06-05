@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+### Changed
+
+- Version of `composer` in docker container updated up to `2.5.7`
+
+### Fixed
+
+- Expected type of installation path from composer installation manager
+
 ## v2.5.1
 
 ### Fixed
