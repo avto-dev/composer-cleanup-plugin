@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## Unreleased
+## v2.6.0
 
 ### Changed
 
@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Fixed
 
-- Expected type of installation path from composer installation manager
+- Expected type of installation path from composer installation manager [[#12](https://github.com/avto-dev/composer-cleanup-plugin/issues/12)]
 
 ## v2.5.1
 
