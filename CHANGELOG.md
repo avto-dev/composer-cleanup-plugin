@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Checking for the type of package before cleanup. Not clean packages with the `metapackage` type.
+- Checking for the type of package before cleanup. Not clean packages with the `metapackage` type
 
 ## v2.6.0
 
