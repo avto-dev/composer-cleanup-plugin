@@ -20,6 +20,8 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 {
     public const SELF_PACKAGE_NAME = 'avto-dev/composer-cleanup-plugin';
 
+    private const PACKAGE_TYPE_METAPACKAGE = 'metapackage';
+
     /**
      * {@inheritdoc}
      *
@@ -80,6 +82,10 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 
         // Loop over all installed packages
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
+            if (self::isMetapackage($package)) {
+                continue;
+            }
+
             $package_name = $package->getName();
             $install_path = $installation_manager->getInstallPath($package) ?: '';
 
@@ -136,6 +142,10 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected static function cleanupPackage(PackageInterface $package, IOInterface $io, Composer $composer): void
     {
+        if (self::isMetapackage($package)) {
+            return;
+        }
+
         $fs               = new Filesystem;
         $saved_size_bytes = 0;
         $package_rules    = Rules::getPackageRules();
@@ -188,5 +198,17 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         return $saved_size_bytes;
+    }
+
+    /**
+     * Metapackage is an empty package that contains requirements and will trigger their installation,
+     * but contains no files and will not write anything to the filesystem.
+     *
+     * @param PackageInterface $package
+     * @return bool
+     */
+    private static function isMetapackage(PackageInterface $package): bool
+    {
+        return self::PACKAGE_TYPE_METAPACKAGE === $package->getType();
     }
 }
