@@ -22,7 +22,7 @@ class Rules
             // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
             'AUTHORS', 'LICENSE', 'COPYING', 'AUTHORS', // Text files without extensions
             'CHANGES.txt', 'CHANGES', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
-            '.github', '.gitlab', // .git* specific directories
+            '.github', '.gitlab', '.git' // .git* specific directories
             '.gitignore', '.gitattributes', // git-specific files
             'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', '.psalm', // Test configurations
             '.travis.yml', '.travis', '.scrutinizer.yml', '.circleci', 'appveyor.yml', // CI
