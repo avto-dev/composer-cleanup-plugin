@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AvtoDev\Composer\Cleanup;
 
@@ -74,6 +74,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $fs            = new Filesystem;
         $global_rules  = Rules::getGlobalRules();
         $package_rules = Rules::getPackageRules();
+        $custom_rules  = Rules::getCustomRules();
 
         $installation_manager = $composer->getInstallationManager();
 
@@ -89,11 +90,17 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             $package_name = $package->getName();
             $install_path = $installation_manager->getInstallPath($package) ?: '';
 
-            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
-
+//            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
+//
             // Try to extract defined targets for a package
-            if (isset($package_rules[$package_name])) {
-                $saved_size_bytes += self::makeClean($install_path, $package_rules[$package_name], $fs, $io);
+            if (isset($package_rules[$package_name]) && $package_name === 'nesbot/carbon') {
+                $exclude = isset($custom_rules['exclude'][$package_name])
+                    ? $custom_rules['exclude'][$package_name]
+                    : [];
+
+                $path_list = self::cleanExcluded($install_path, $package_rules[$package_name], $exclude);
+
+                $saved_size_bytes += self::makeClean($install_path, $path_list, $fs, $io);
             }
         }
 
@@ -135,8 +142,8 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
 
     /**
      * @param PackageInterface $package
-     * @param IOInterface      $io
-     * @param Composer         $composer
+     * @param IOInterface $io
+     * @param Composer $composer
      *
      * @return void
      */
@@ -146,14 +153,14 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
-        $fs               = new Filesystem;
+        $fs = new Filesystem;
         $saved_size_bytes = 0;
-        $package_rules    = Rules::getPackageRules();
+        $package_rules = Rules::getPackageRules();
 
         $install_path = $composer->getInstallationManager()->getInstallPath($package) ?: '';
 
         // use global rules at first
-        $saved_size_bytes += self::makeClean($install_path, Rules::getGlobalRules(), $fs, $io);
+        // $saved_size_bytes += self::makeClean($install_path, Rules::getGlobalRules(), $fs, $io);
 
         // then check for individual package rule
         if (isset($package_rules[$package->getName()])) {
@@ -165,35 +172,53 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         }
     }
 
+    private static function cleanExcluded(string $package_path, array $rules, array $excluded = []): array
+    {
+        $rules_paths = [];
+        foreach ($rules as $rule) {
+            $paths[] = \glob($package_path . DIRECTORY_SEPARATOR . \ltrim(\trim($rule), '\\/'), \GLOB_ERR);
+        }
+        $rules_paths = array_merge($rules_paths, ...$paths);
+
+        unset($paths);
+
+        if(!$excluded) {
+            return $rules_paths;
+        }
+
+        $excluded_paths = [];
+        foreach ($excluded as $rule) {
+            $paths[] = \glob($package_path . DIRECTORY_SEPARATOR . \ltrim(\trim($rule), '\\/'), \GLOB_ERR);
+        }
+        $excluded_paths = array_merge($excluded_paths, ...$paths);
+
+
+//        var_dump($rules_paths);
+        return array_diff($rules_paths, $excluded_paths);
+    }
+
     /**
-     * @param string        $package_path
-     * @param array<string> $rules
-     * @param Filesystem    $fs
-     * @param IOInterface   $io
+     * @param array<string> $paths
+     * @param Filesystem $fs
+     * @param IOInterface $io
      *
      * @return int
      */
-    private static function makeClean(string $package_path, array $rules, Filesystem $fs, IOInterface $io): int
+    private static function makeClean(array $paths, Filesystem $fs, IOInterface $io): int
     {
         $saved_size_bytes = 0;
 
-        foreach ($rules as $rule) {
-            $paths = \glob($package_path . DIRECTORY_SEPARATOR . \ltrim(\trim($rule), '\\/'), \GLOB_ERR);
+        foreach ($paths as $path) {
+            try {
+                $path_size = $fs->size($path);
 
-            if (\is_array($paths)) {
-                foreach ($paths as $path) {
-                    try {
-                        $path_size = $fs->size($path);
-
-                        if ($fs->remove($path)) {
-                            $saved_size_bytes += $path_size;
-                        }
-                    } catch (\Throwable $e) {
-                        $io->writeError(\sprintf(
-                            '<info>%s:</info> Error occurred: %s', self::SELF_PACKAGE_NAME, $e->getMessage()
-                        ));
-                    }
+                if ($fs->remove($path)) {
+                    $saved_size_bytes += $path_size;
                 }
+            } catch (\Throwable $e) {
+                $io->writeError(\sprintf(
+                    '<info>%s:</info> Error occurred: %s', self::SELF_PACKAGE_NAME, $e->getMessage()
+                ));
             }
         }
 

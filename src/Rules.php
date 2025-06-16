@@ -183,6 +183,27 @@ class Rules
         ];
     }
 
+    public static function getCustomRules(): array
+    {
+        if (\file_exists($clean_rules = __DIR__ . '/../../../../clean_rules.php')) {
+            $custom_rules = require $clean_rules;
+
+            foreach (['exclude', 'include'] as $rule_name) {
+                $rules = [];
+                foreach ($custom_rules[$rule_name] ?? [] as $package_name => $rules_mask) {
+                    $rules = \array_map(static function (string $rule_mask): string {
+                        return "{$rule_mask}.php";
+                    }, $rules_mask);
+
+                    $result[$rule_name][$package_name] = $rules;
+                }
+            }
+            return $result ?? [];
+        }
+
+        return [];
+    }
+
     /**
      * Package fzaninotto/faker moved to fakerphp/faker.
      *
