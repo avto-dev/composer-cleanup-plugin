@@ -1,9 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace AvtoDev\Composer\Cleanup\Tests;
 
+use Composer\Config;
+use Composer\Factory;
+use Composer\Installer\PackageEvent;
+use Composer\IO\BufferIO;
+use Composer\Package\Package;
+use Composer\Package\RootPackage;
 use ReflectionMethod;
 use Composer\Script\ScriptEvents;
 use AvtoDev\Composer\Cleanup\Plugin;
@@ -40,13 +46,5 @@ class PluginTest extends AbstractTestCase
         $this->assertTrue((new ReflectionMethod(Plugin::class, 'cleanupAllPackages'))->isPublic());
         $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageInstallEvent'))->isPublic());
         $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageUpdateEvent'))->isPublic());
-    }
-
-    /**
-     * @return void
-     */
-    public function testWIP(): void
-    {
-        $this->markTestIncomplete('TODO: Write better tests');
     }
 }
