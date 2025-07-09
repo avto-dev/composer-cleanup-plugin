@@ -105,7 +105,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
                     $io,
                     $install_path,
                     $rules_list,
-                    (array) $excluded_rules
+                    $excluded_rules
                 );
             }
         }
@@ -173,7 +173,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         if ($package_rules) {
             $excluded_rules = $rules->findExcludedByPackageName($package->getName());
 
-            $saved_size_bytes += self::cleanFiles($fs, $io, $install_path, $package_rules, (array) $excluded_rules);
+            $saved_size_bytes += self::cleanFiles($fs, $io, $install_path, $package_rules, $excluded_rules);
         }
 
         if ($saved_size_bytes > 1024 * 32 || $io->isVerbose() || $io->isVeryVerbose()) {
@@ -203,6 +203,8 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             ->reverseSorting();
 
         $saved_size_bytes = 0;
+
+        /** @var \SplFileInfo $item */
         foreach ($iterator as $item) {
             try {
                 if (! $item->isDir() || $fs->isDirEmpty($item->getPathname())) {

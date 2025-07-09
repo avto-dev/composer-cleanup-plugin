@@ -49,9 +49,9 @@ Some packages don't obey the general rules, and remove more/less files. Packages
 
 ## Rules
 
-Please submit a PR to [src/clean_rules.php] to add more rules for packages. Make sure you test them first, sometimes tests dirs are classmapped and will error when deleted.
+Please submit a PR to [src/.clean_rules.php] to add more rules for packages. Make sure you test them first, sometimes tests dirs are classmapped and will error when deleted.
 
-If you need to optionally override the parameters of the cleaning rules, then create a `clean_rules.php` file in the root of your application that returns an associated array of rules.
+If you need to optionally override the parameters of the cleaning rules, then create a `.clean_rules.php` file in the root of your application that returns an associated array of rules.
 If it exists, its content will be merged with the package config, optionally overriding the necessary rules.
 The config includes 4 properties: `global`, `packages`, `excluded_global`, `excluded_packages`.
 
@@ -152,4 +152,4 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_commits]:https://github.com/avto-dev/composer-cleanup-plugin/commits
 [link_pulls]:https://github.com/avto-dev/composer-cleanup-plugin/pulls
 [link_license]:https://github.com/avto-dev/composer-cleanup-plugin/blob/master/LICENSE
-[src/clean_rules.php]:/clean_rules.php
+[src/.clean_rules.php]:/.clean_rules.php

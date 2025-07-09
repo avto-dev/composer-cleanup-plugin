@@ -1,35 +1,21 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace AvtoDev\Composer\Cleanup\Tests;
 
-use Composer\Config;
-use Composer\Factory;
-use Composer\Installer\PackageEvent;
-use Composer\IO\BufferIO;
-use Composer\Package\Package;
-use Composer\Package\RootPackage;
-use ReflectionMethod;
 use Composer\Script\ScriptEvents;
 use AvtoDev\Composer\Cleanup\Plugin;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \AvtoDev\Composer\Cleanup\Plugin
- */
+#[CoversClass(Plugin::class)]
 class PluginTest extends AbstractTestCase
 {
-    /**
-     * @return void
-     */
     public function testConstants(): void
     {
         $this->assertSame('avto-dev/composer-cleanup-plugin', Plugin::SELF_PACKAGE_NAME);
     }
 
-    /**
-     * @return void
-     */
     public function testGetSubscribedEvents(): void
     {
         $subs = Plugin::getSubscribedEvents();
@@ -38,13 +24,10 @@ class PluginTest extends AbstractTestCase
         $this->assertSame('cleanupAllPackages', $subs[ScriptEvents::POST_AUTOLOAD_DUMP]);
     }
 
-    /**
-     * @return void
-     */
     public function testMethodsAccess(): void
     {
-        $this->assertTrue((new ReflectionMethod(Plugin::class, 'cleanupAllPackages'))->isPublic());
-        $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageInstallEvent'))->isPublic());
-        $this->assertTrue((new ReflectionMethod(Plugin::class, 'handlePostPackageUpdateEvent'))->isPublic());
+        $this->assertTrue((new \ReflectionMethod(Plugin::class, 'cleanupAllPackages'))->isPublic());
+        $this->assertTrue((new \ReflectionMethod(Plugin::class, 'handlePostPackageInstallEvent'))->isPublic());
+        $this->assertTrue((new \ReflectionMethod(Plugin::class, 'handlePostPackageUpdateEvent'))->isPublic());
     }
 }

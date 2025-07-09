@@ -8,8 +8,8 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class Rules
 {
-    protected const VENDOR_RULES          = __DIR__ . \DIRECTORY_SEPARATOR . '../clean_rules.php';
-    protected const OVERRIDE_RULES        = __DIR__ . \DIRECTORY_SEPARATOR . '../../../../clean_rules.php';
+    protected const VENDOR_RULES          = __DIR__ . \DIRECTORY_SEPARATOR . '../.clean_rules.php';
+    protected const OVERRIDE_RULES        = __DIR__ . \DIRECTORY_SEPARATOR . '../../../../.clean_rules.php';
     private const INCLUDED_GLOBAL_FIELD   = 'global';
     private const EXCLUDED_GLOBAL_FIELD   = 'excluded_global';
     private const INCLUDED_PACKAGES_FIELD = 'packages';
@@ -50,7 +50,7 @@ class Rules
     public function findIncludedByPackageName(string $package_name): array
     {
         // Return empty list if package is fully excluded
-        if ($this->findExcludedByPackageName($package_name) === null) {
+        if ($this->isPackageExcluded($package_name)) {
             return [];
         }
 
@@ -60,21 +60,15 @@ class Rules
     /**
      * @param string $package_name
      *
-     * @return array<string>|null
+     * @return array<string>
      */
-    public function findExcludedByPackageName(string $package_name): ?array
+    public function findExcludedByPackageName(string $package_name): array
     {
-        $excluded_rules_exists = \array_key_exists($package_name, $this->full_rules_list[self::EXCLUDED_PACKAGES_FIELD]);
-
-        if ($excluded_rules_exists) {
-            $excluded_rules = $this->full_rules_list[self::EXCLUDED_PACKAGES_FIELD][$package_name];
-
-            return \is_array($excluded_rules)
-                ? $this->getFlattenList($excluded_rules)
-                : null;
+        if ($this->isPackageExcluded($package_name)) {
+            return [];
         }
 
-        return [];
+        return $this->getFlattenList($this->full_rules_list[self::EXCLUDED_PACKAGES_FIELD][$package_name] ?? []);
     }
 
     /**
@@ -99,6 +93,19 @@ class Rules
         }
 
         return [];
+    }
+
+    protected function isPackageExcluded(string $package_name): bool
+    {
+        $excluded_rules_exists = \array_key_exists($package_name, $this->full_rules_list[self::EXCLUDED_PACKAGES_FIELD]);
+
+        if ($excluded_rules_exists) {
+            $excluded_rules = $this->full_rules_list[self::EXCLUDED_PACKAGES_FIELD][$package_name];
+
+            return $excluded_rules === null;
+        }
+
+        return false;
     }
 
     /**
