@@ -3,7 +3,10 @@
 /.github      export-ignore
 /tests        export-ignore
 /[Dd]ocker*   export-ignore
-/.*           export-ignore
 /phpunit.xml* export-ignore
 /phpstan.*    export-ignore
+/Makefile     export-ignore
+/LICENCE      export-ignore
+/*.md         export-ignore
+/*.yml        export-ignore
 /Makefile     export-ignore
