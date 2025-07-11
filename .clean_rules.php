@@ -80,7 +80,7 @@ return [
                 'el_CY', 'en_PH', 'et_EE', 'hr_HR', 'it_IT', 'uk_UA', 'sr_Cyrl_RS', 'sr_Latn_RS',
             ],
         ],
-        'friendsofphp/php-cs-fixer' => ['.sh', 'doc', '.png'],
+        'friendsofphp/php-cs-fixer' => ['.sh', '.md', '.png'],
         'google/apiclient' => ['docs'],
         'hackzilla/password-generator' => ['Tests'],
         'hamcrest/hamcrest-php' => ['tests'],
