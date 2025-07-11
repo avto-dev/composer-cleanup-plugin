@@ -10,6 +10,7 @@ use Composer\Util\Filesystem;
 use Composer\Script\ScriptEvents;
 use Composer\Installer\PackageEvent;
 use Composer\Plugin\PluginInterface;
+use Symfony\Component\Finder\Finder;
 use Composer\Package\PackageInterface;
 use Composer\Script\Event as ScriptEvent;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -18,8 +19,7 @@ use Composer\DependencyResolver\Operation\InstallOperation;
 
 final class Plugin implements PluginInterface, EventSubscriberInterface
 {
-    public const SELF_PACKAGE_NAME = 'avto-dev/composer-cleanup-plugin';
-
+    public const SELF_PACKAGE_NAME         = 'avto-dev/composer-cleanup-plugin';
     private const PACKAGE_TYPE_METAPACKAGE = 'metapackage';
 
     /**
@@ -69,16 +69,25 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function cleanupAllPackages(ScriptEvent $event): void
     {
-        $io            = $event->getIO();
-        $composer      = $event->getComposer();
-        $fs            = new Filesystem;
-        $global_rules  = Rules::getGlobalRules();
-        $package_rules = Rules::getPackageRules();
-
+        $start_time           = \microtime(true);
+        $io                   = $event->getIO();
+        $composer             = $event->getComposer();
         $installation_manager = $composer->getInstallationManager();
 
-        $saved_size_bytes = 0;
-        $start_time       = \microtime(true);
+        $fs = new Filesystem();
+
+        $rules = new Rules();
+
+        /** @var string $vendor_dir */
+        $vendor_dir = $composer->getConfig()->get('vendor-dir');
+
+        $saved_size_bytes = self::cleanFiles(
+            $fs,
+            $io,
+            $vendor_dir,
+            $rules->getGlobalRules(),
+            $rules->getExcludedGlobalRules(),
+        );
 
         // Loop over all installed packages
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
@@ -89,11 +98,15 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             $package_name = $package->getName();
             $install_path = $installation_manager->getInstallPath($package) ?: '';
 
-            $saved_size_bytes += self::makeClean($install_path, $global_rules, $fs, $io);
-
-            // Try to extract defined targets for a package
-            if (isset($package_rules[$package_name])) {
-                $saved_size_bytes += self::makeClean($install_path, $package_rules[$package_name], $fs, $io);
+            if ($rules_list = $rules->findIncludedByPackageName($package_name)) {
+                $excluded_rules = $rules->findExcludedByPackageName($package_name);
+                $saved_size_bytes += self::cleanFiles(
+                    $fs,
+                    $io,
+                    $install_path,
+                    $rules_list,
+                    $excluded_rules
+                );
             }
         }
 
@@ -115,7 +128,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $operation = $event->getOperation();
 
         if ($operation instanceof InstallOperation) {
-            static::cleanupPackage($operation->getPackage(), $event->getIO(), $event->getComposer());
+            self::cleanupPackage($operation->getPackage(), $event->getIO(), $event->getComposer());
         }
     }
 
@@ -129,7 +142,7 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
         $operation = $event->getOperation();
 
         if ($operation instanceof UpdateOperation) {
-            static::cleanupPackage($operation->getTargetPackage(), $event->getIO(), $event->getComposer());
+            self::cleanupPackage($operation->getTargetPackage(), $event->getIO(), $event->getComposer());
         }
     }
 
@@ -146,18 +159,21 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
-        $fs               = new Filesystem;
+        $rules            = new Rules();
+        $fs               = new Filesystem();
         $saved_size_bytes = 0;
-        $package_rules    = Rules::getPackageRules();
+        $package_rules    = $rules->findIncludedByPackageName($package->getName());
 
         $install_path = $composer->getInstallationManager()->getInstallPath($package) ?: '';
 
         // use global rules at first
-        $saved_size_bytes += self::makeClean($install_path, Rules::getGlobalRules(), $fs, $io);
+        $saved_size_bytes += self::cleanFiles($fs, $io, $install_path, $rules->getGlobalRules(),$rules->getExcludedGlobalRules());
 
         // then check for individual package rule
-        if (isset($package_rules[$package->getName()])) {
-            $saved_size_bytes += self::makeClean($install_path, $package_rules[$package->getName()], $fs, $io);
+        if ($package_rules) {
+            $excluded_rules = $rules->findExcludedByPackageName($package->getName());
+
+            $saved_size_bytes += self::cleanFiles($fs, $io, $install_path, $package_rules, $excluded_rules);
         }
 
         if ($saved_size_bytes > 1024 * 32 || $io->isVerbose() || $io->isVeryVerbose()) {
@@ -166,34 +182,41 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * @param string        $package_path
-     * @param array<string> $rules
      * @param Filesystem    $fs
      * @param IOInterface   $io
+     * @param string        $package_path
+     * @param array<string> $included_rules
+     * @param array<string> $excluded_rules
      *
      * @return int
      */
-    private static function makeClean(string $package_path, array $rules, Filesystem $fs, IOInterface $io): int
+    private static function cleanFiles(Filesystem $fs, IOInterface $io, string $package_path, array $included_rules, array $excluded_rules): int
     {
+        $finder = new Finder();
+
+        $iterator = $finder
+            ->in($package_path)
+            ->path($included_rules)
+            ->notPath($excluded_rules)
+            ->ignoreDotFiles(false)
+            ->sortByType()
+            ->reverseSorting();
+
         $saved_size_bytes = 0;
 
-        foreach ($rules as $rule) {
-            $paths = \glob($package_path . DIRECTORY_SEPARATOR . \ltrim(\trim($rule), '\\/'), \GLOB_ERR);
-
-            if (\is_array($paths)) {
-                foreach ($paths as $path) {
-                    try {
-                        $path_size = $fs->size($path);
-
-                        if ($fs->remove($path)) {
-                            $saved_size_bytes += $path_size;
-                        }
-                    } catch (\Throwable $e) {
-                        $io->writeError(\sprintf(
-                            '<info>%s:</info> Error occurred: %s', self::SELF_PACKAGE_NAME, $e->getMessage()
-                        ));
-                    }
+        /** @var \SplFileInfo $item */
+        foreach ($iterator as $item) {
+            try {
+                if (! $item->isDir() || $fs->isDirEmpty($item->getPathname())) {
+                    $saved_size_bytes += $fs->size($item->getPathname());
+                    $fs->remove($item->getPathname());
                 }
+            } catch (\Throwable $e) {
+                $io->writeError(\sprintf(
+                    '<info>%s:</info> Error occurred: %s',
+                    self::SELF_PACKAGE_NAME,
+                    $e->getMessage()
+                ));
             }
         }
 
@@ -205,10 +228,11 @@ final class Plugin implements PluginInterface, EventSubscriberInterface
      * but contains no files and will not write anything to the filesystem.
      *
      * @param PackageInterface $package
+     *
      * @return bool
      */
     private static function isMetapackage(PackageInterface $package): bool
     {
-        return self::PACKAGE_TYPE_METAPACKAGE === $package->getType();
+        return $package->getType() === self::PACKAGE_TYPE_METAPACKAGE;
     }
 }

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
+### Added
+
+- File cleaning configuration has been moved to `.clean_rules.php`
+
+### Changed
+
+- Minimal require PHP version now is `8.2`
+- Composer version up to `2.8`
+- Package `phpstan/phpstan` up to `^1.12`
+- Package `phpunit/phpunit` up to `^11.5`
+
 ## v2.7.0
 
 ### Added

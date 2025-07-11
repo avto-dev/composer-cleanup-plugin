@@ -47,9 +47,61 @@ For every installed or updated package in the default list, in general:
 
 Some packages don't obey the general rules, and remove more/less files. Packages that do not have rules added are ignored.
 
-## Adding rules
+## Rules
 
-Please submit a PR to [src/Rules.php] to add more rules for packages. Make sure you test them first, sometimes tests dirs are classmapped and will error when deleted.
+Please submit a PR to [src/.clean_rules.php] to add more rules for packages. Make sure you test them first, sometimes tests dirs are classmapped and will error when deleted.
+
+If you need to optionally override the parameters of the cleaning rules, then create a `.clean_rules.php` file in the root of your application that returns an associated array of rules.
+If it exists, its content will be merged with the package config, optionally overriding the necessary rules.
+The config includes 4 properties: `global`, `packages`, `excluded_global`, `excluded_packages`.
+
+#### Global
+
+List of files ready for removal in each installed package.
+
+
+#### Packages
+
+List of files and directories ready for deletion by package.
+
+#### Excluded global
+
+List of files that should be excluded from the deletion list.
+
+#### Excluded Packages
+
+List of files and directories to exclude from deletion on a per-package basis.
+
+### Full example
+
+It should look like this:
+
+```php
+<?php
+
+return [
+    'global' => [
+        'test.yml', // Delete file `test.yml` from all packages
+        'ci.yaml',
+        'stub.json',
+    ],
+
+    'packages' => [
+        'company/first-package' => ['tests'], // Delete all matches in package
+        'company/second-package' => ['test', '*.md'],
+        'company/third-package' => ['docs'],
+    ],
+
+    'excluded_global' => [
+        'stub.json', // This file will be excluded from global list
+    ],
+    'excluded_packages' => [
+        'company/first-package' => ['tests/ApiTest.php'], // This file will not be deleted
+        'company/third-package' => null, // This package will be excluded from the purge list.
+    ],
+];
+
+```
 
 ### Testing
 
@@ -100,4 +152,4 @@ This is open-sourced software licensed under the [MIT License][link_license].
 [link_commits]:https://github.com/avto-dev/composer-cleanup-plugin/commits
 [link_pulls]:https://github.com/avto-dev/composer-cleanup-plugin/pulls
 [link_license]:https://github.com/avto-dev/composer-cleanup-plugin/blob/master/LICENSE
-[src/Rules.php]:/src/Rules.php
+[src/.clean_rules.php]:/.clean_rules.php
