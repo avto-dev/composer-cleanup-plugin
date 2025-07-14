@@ -13,16 +13,16 @@ return [
     |
     */
     'global' => [
-        '*.md', '*.MD', '*.rst', '*.RST', '*.markdown',
+        '.md', '.MD', '.rst', '.RST', '.markdown',
         // Markdown/reStructuredText files like `README.md`, `changelog.MD`..
         'AUTHORS', 'LICENSE', 'COPYING', 'AUTHORS', // Text files without extensions
         'CHANGES.txt', 'CHANGES', 'CHANGELOG.txt', 'LICENSE.txt', 'TODO.txt', 'README.txt', // Text files
         '.github', '.gitlab', '.git', // .git* specific directories
         '.gitignore', '.gitattributes', // git-specific files
-        'phpunit.xml*', 'phpstan.neon*', 'phpbench.*', 'psalm.*', '.psalm', // Test configurations
+        'phpunit.xml', 'phpstan.neon', 'phpbench', 'psalm', '.psalm', // Test configurations
         '.travis.yml', '.travis', '.scrutinizer.yml', '.circleci', 'appveyor.yml', // CI
         '.codecov.yml', '.coveralls.yml', '.styleci.yml', '.dependabot', // CI
-        '.php_cs', '.php_cs.*', 'phpcs.*', '.*lint', // Code-style definitions
+        '.php_cs', '.php_cs.*', 'phpcs.xml', '.*lint', // Code-style definitions
         '.gush.yml', 'bors.toml', '.pullapprove.yml', // 3rd party integrations
         '.editorconfig', '.idea', '.vscode', // Configuration for editors
         'phive.xml', 'build.xml', // Build configurations
@@ -50,7 +50,7 @@ return [
         'artesaos/seotools' => ['tests'],
         'aws/aws-sdk-php' => ['.changes', '.github'],
         'beyondcode/laravel-dump-server' => ['docs'],
-        'binarytorch/larecipe' => ['package*', '*.js', 'yarn.lock'],
+        'binarytorch/larecipe' => ['package*', '.js', 'yarn.lock'],
         'cakephp/chronos' => ['docs'],
         'cbschuld/browser.php' => ['tests'],
         'chumper/zipper' => ['tests'],
@@ -110,8 +110,8 @@ return [
         ],
         'nikic/php-parser' => ['test', 'test_old', 'doc'],
         'opekunov/laravel-centrifugo-broadcaster' => ['tests'],
-        'paragonie/random_compat' => ['other', '*.sh'],
-        'paragonie/sodium_compat' => ['*.sh', 'plasm-*.*', 'dist'],
+        'paragonie/random_compat' => ['other', '.sh'],
+        'paragonie/sodium_compat' => ['.sh', 'plasm-*.*', 'dist'],
         'pear/archive_tar' => ['docs', 'tests', 'sync-php4'],
         'pear/cache_lite' => ['docs', 'tests', 'TODO'],
         'pear/console_getopt' => ['Console\/tests'],
@@ -155,8 +155,8 @@ return [
         'sebastian/type' => ['tests'],
         'sentry/sentry-laravel' => ['test', 'scripts', '.craft.yml'],
         'spatie/laravel-permission' => ['art', 'docs'],
-        'spiral/goridge' => ['examples', '*.go', 'go.mod', 'go.sum'],
-        'spiral/roadrunner' => ['cmd', 'osutil', 'service', 'util', 'systemd', '*.mod', '*.sum', '*.go', '*.sh', 'tests'],
+        'spiral/goridge' => ['examples', '.go', 'go.mod', 'go.sum'],
+        'spiral/roadrunner' => ['cmd', 'osutil', 'service', 'util', 'systemd', '.mod', '.sum', '.go', '.sh', 'tests'],
         'stil/gd-text' => ['examples', 'tests'],
         'swiftmailer/swiftmailer' => ['tests', 'doc'],
         'symfony/console' => ['Tester'],
@@ -175,7 +175,7 @@ return [
         'symfony/translation' => ['Tests'],
         'symfony/translation-contracts' => ['Test'],
         'symfony/var-dumper' => ['Tests', 'Test'],
-        'tecnickcom/tcpdf' => ['doc', 'examples', '*.TXT'],
+        'tecnickcom/tcpdf' => ['doc', 'examples', '.TXT'],
         'theiconic/php-ga-measurement-protocol' => ['tests', 'docs'],
         'theseer/tokenizer' => ['tests'],
 
@@ -188,8 +188,8 @@ return [
             ],
         ],
         'voku/portable-ascii' => ['docs'],
-        'wapmorgan/morphos' => ['tests', '*.md'],
-        'yoomoney/yookassa-sdk-php' => ['tests', '*.md'],
+        'wapmorgan/morphos' => ['tests', '.md'],
+        'yoomoney/yookassa-sdk-php' => ['tests', '.md'],
     ],
 
     /*
