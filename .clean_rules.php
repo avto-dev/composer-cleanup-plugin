@@ -62,7 +62,7 @@ return [
         'doctrine/annotations' => ['docs'],
         'doctrine/inflector' => ['docs'],
         'doctrine/instantiator' => ['docs'],
-        'dompdf/dompdf' => ['LICENSE.LGPL', 'VERSION'],
+        'dompdf/dompdf' => ['LICENSE.LGPL'],
         'dragonmantank/cron-expression' => ['tests'],
         'elasticsearch/elasticsearch' => ['tests', 'travis', 'docs'],
         'erusev/parsedown-extra' => ['test'],
